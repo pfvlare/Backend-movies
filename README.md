@@ -27,19 +27,18 @@ A API é responsável por fornecer os dados dos filmes, usuários, favoritos e i
 
 ## 📁 Estrutura do Projeto
 
-├── src
-│   ├── app.module.ts        # Módulo principal
-│   ├── main.ts              # Entrypoint
-│   ├── modules/
-│   │   ├── movies/          # Módulo de filmes
-│   │   ├── users/           # Módulo de usuários
-│   │   └── favorites/       # Módulo de favoritos
-├── test                     # Testes unitários e e2e
-├── package.json             # Dependências e scripts
-├── .prettierrc              # Configuração de formatação
-├── .eslintrc.mjs            # Configuração de lint
-└── README.md
-
+├── src/
+│   ├── app.module.ts          # Módulo principal da aplicação
+│   ├── main.ts                # Entrypoint do servidor
+│   └── modules/
+│       ├── movies/            # Módulo de filmes
+│       ├── users/             # Módulo de usuários
+│       └── favorites/         # Módulo de favoritos
+├── test/                      # Testes unitários e de integração (e2e)
+├── package.json               # Dependências e scripts do projeto
+├── .prettierrc                # Configuração de formatação de código
+├── .eslintrc.mjs              # Configuração de linting
+└── README.md                  # Documentação do projeto
 ---
 
 ## 🔌 Conexão com MongoDB
@@ -60,6 +59,19 @@ Inclui uma collection Postman para:
 - Gerenciar favoritos
 
 > 💡 **Dica:** Use tokens JWT (se implementado) nos headers `Authorization`.
+
+---
+
+📫 Endpoints principais
+
+GET    /movies             # Lista todos os filmes
+GET    /movies/:id         # Detalhes de um filme
+POST   /movies             # Adiciona um novo filme
+PUT    /movies/:id         # Atualiza um filme
+DELETE /movies/:id         # Remove um filme
+
+POST   /users/signup       # Cadastro de usuário
+POST   /users/login        # Login de usuário
 
 ---
 
