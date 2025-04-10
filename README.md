@@ -25,20 +25,31 @@ A API é responsável por fornecer os dados dos filmes, usuários, favoritos e i
 
 ---
 
-## 📁 Estrutura do Projeto
-
-├── src/
-│   ├── app.module.ts           # Módulo principal da aplicação
-│   ├── main.ts                 # Entrypoint do servidor
-│   └── modules/
-│       ├── movies/             # Módulo de filmes
-│       ├── users/              # Módulo de usuários
-│       └── favorites/          # Módulo de favoritos
-├── test/                       # Testes unitários e de integração (e2e)
-├── package.json                # Dependências e scripts do projeto
-├── .prettierrc                 # Configuração de formatação de código
-├── .eslintrc.mjs               # Configuração de linting
-└── README.md                   # Documentação do projeto
+📂 Estrutura do Projeto
+	
+ •	src/ — Código-fonte principal
+ 
+  - app.module.ts — Módulo principal da aplicação
+  
+  - main.ts — Entrypoint do servidor
+  
+  - modules/ — Agrupamento de módulos
+  
+    - movies/ — Módulo de filmes
+    
+    - users/ — Módulo de usuários
+    
+    - favorites/ — Módulo de favoritos
+    
+  •	test/ — Testes unitários e de integração (e2e)
+ 
+  •	package.json — Dependências e scripts do projeto
+ 
+  •	.prettierrc — Configuração de formatação de código
+ 
+  •	.eslintrc.mjs — Configuração de linting
+ 
+  •	README.md — Documentação do projeto
 ---
 
 ## 🔌 Conexão com MongoDB
@@ -65,15 +76,22 @@ Inclui uma collection Postman para:
 📫 Endpoints principais
 
 🎞️ Filmes
-GET     /movies         # Lista todos os filmes
-GET     /movies/:id     # Retorna os detalhes de um filme específico
-POST    /movies         # Adiciona um novo filme
-PUT     /movies/:id     # Atualiza um filme existente
-DELETE  /movies/:id     # Remove um filme
+	
+ •	GET /movies — Lista todos os filmes
+ 
+ •	GET /movies/:id — Detalhes de um filme específico
+ 
+ •	POST /movies — Adiciona um novo filme
+ 
+ •	PUT /movies/:id — Atualiza um filme existente
+ 
+ •	DELETE /movies/:id — Remove um filme
 
 👤 Usuários
-POST    /users/signup   # Cadastro de novo usuário
-POST    /users/login    # Login do usuário
+
+ •	POST /users/signup — Cadastro de usuário
+	
+ •	POST /users/login — Login do usuário
 
 ---
 
