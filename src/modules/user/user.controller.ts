@@ -23,4 +23,5 @@ export class UserController {
     ): Promise<Omit<User, 'password'>> {
         return this.authService.signIn(signInData);
     }
+
 }
