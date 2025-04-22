@@ -2,15 +2,14 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaService } from "../database/prisma.service";
 import { Prisma, User } from "@prisma/client";
 import * as bcrypt from 'bcrypt';
-import { LoginDto } from "../auth/dto/login.dto";
 
 @Injectable()
 export class UserService {
     constructor(private prisma: PrismaService) { }
 
-    async createUser(data: Prisma.UserCreateInput): Promise<User> {
+    async createUser(data: Prisma.UserUncheckedCreateInput): Promise<User> {
         try {
-            const hashPassword = await bcrypt.hash(data.password)
+            const hashPassword = await bcrypt.hash(data.password, 10)
 
             const user = await this.prisma.user.create({
                 data: {
@@ -31,7 +30,7 @@ export class UserService {
             }
 
             throw new HttpException(
-                'Error creating user.',
+                `Error creating user. ${error.message}`,
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }

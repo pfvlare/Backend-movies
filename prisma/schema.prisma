@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  id           String        @id @default(uuid()) @map("_id") @db.ObjectId
+  id           String        @id @default(uuid()) @map("_id")
   email        String        @unique
   name         String
   password     String
@@ -17,28 +17,28 @@ model User {
 }
 
 model Subscription {
-  id           String   @id @default(uuid()) @map("_id") @db.ObjectId
+  id           String   @id @default(uuid()) @map("_id")
   plan         Plan
   value        Float
   registeredAt DateTime
   expiresAt    DateTime
   user         User     @relation(fields: [userId], references: [id])
-  userId       String   @unique @db.ObjectId
+  userId       String   @unique
 }
 
 model Movie {
-  id         String     @id @default(uuid()) @map("_id") @db.ObjectId
+  id         String     @id @default(uuid()) @map("_id")
   title      String
-  apiId      String     @unique @db.ObjectId
+  apiId      String     @unique
   imageUrl   String
   favorite   Favorites? @relation(fields: [favoriteId], references: [id])
-  favoriteId String?    @db.ObjectId
+  favoriteId String?
 }
 
 model Favorites {
-  id     String  @id @default(uuid()) @map("_id") @db.ObjectId
+  id     String  @id @default(uuid()) @map("_id")
   user   User    @relation(fields: [userId], references: [id])
-  userId String  @unique @db.ObjectId
+  userId String  @unique
   Movie  Movie[]
 }
 
