@@ -33,17 +33,34 @@ export class FavoritesService {
     }
 
     async addMovieToFavorites(userId: string, movieId: string): Promise<Favorites> {
-        return this.prisma.favorites.update({
+        const favorites = await this.prisma.favorites.upsert({
             where: { userId },
-            data: {
-                Movie: {
-                    connect: { id: movieId },
-                },
+            create: {
+                userId,
             },
-            include: {
-                Movie: true,
+            update: {},
+        });
+
+        const movie = await this.prisma.movie.findUnique({
+            where: { id: movieId },
+        });
+
+        if (!movie) {
+            throw new Error(`Movie not found with id: ${movieId}`);
+        }
+
+        await this.prisma.movie.update({
+            where: { id: movieId },
+            data: {
+                favoriteId: favorites.id,
             },
         });
+
+        const updatedFavorites = await this.findByUserId(userId);
+        if (!updatedFavorites) {
+            throw new Error(`Favorites not found for userId: ${userId}`);
+        }
+        return updatedFavorites;
     }
 
     async removeMovieFromFavorites(userId: string, movieId: string): Promise<Favorites> {

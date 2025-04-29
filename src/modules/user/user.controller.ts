@@ -16,7 +16,7 @@ export class UserController {
         return this.userService.createUser(userData);
     }
 
-    @Post('signin')
+    @Post('login')
     @HttpCode(HttpStatus.OK)
     async signIn(
         @Body() signInData: { email: string; password: string },
