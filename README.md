@@ -49,7 +49,7 @@ A API é responsável por fornecer os dados dos filmes, usuários, favoritos e i
  
   •	.eslintrc.mjs — Configuração de linting
  
-  •	README.md — Documentação do projeto
+
 ---
 
 ## 🔌 Conexão com MongoDB
