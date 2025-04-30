@@ -43,7 +43,10 @@ export class UserService {
                 select: {
                     id: true,
                     email: true,
-                    name: true,
+                    firstname: true,
+                    lastname: true,
+                    phone: true,
+                    address: true,
                     password: true,
                 },
             });

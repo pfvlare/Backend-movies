@@ -10,7 +10,10 @@ generator client {
 model User {
   id           String        @id @default(uuid()) @map("_id")
   email        String        @unique
-  name         String
+  firstname    String
+  lastname     String
+  phone        String
+  address      String
   password     String
   Subscription Subscription?
   Favorites    Favorites?
