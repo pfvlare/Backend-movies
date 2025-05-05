@@ -69,30 +69,6 @@ Inclui uma collection Postman para:
 - Criar, buscar, editar e deletar filmes
 - Gerenciar favoritos
 
-> 💡 **Dica:** Use tokens JWT (se implementado) nos headers `Authorization`.
-
----
-
-📫 Endpoints principais
-
-🎞️ Filmes
-	
- •	GET /movies — Lista todos os filmes
- 
- •	GET /movies/:id — Detalhes de um filme específico
- 
- •	POST /movies — Adiciona um novo filme
- 
- •	PUT /movies/:id — Atualiza um filme existente
- 
- •	DELETE /movies/:id — Remove um filme
-
-👤 Usuários
-
- •	POST /users/signup — Cadastro de usuário
-	
- •	POST /users/login — Login do usuário
-
 ---
 
 ## 🚀 Como rodar o projeto
@@ -100,5 +76,4 @@ Inclui uma collection Postman para:
 ### Clonando o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/backend-movies.git
-cd backend-movies
+git clone https://github.com/pfvlare/Backend-movies.git
