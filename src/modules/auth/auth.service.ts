@@ -26,7 +26,7 @@ export class AuthService {
                 lastname: user.lastname,
                 email: user.email,
                 phone: user.phone,
-                address: user.address,
+                address: user.address
             }
         } catch (err) {
             throw new HttpException(
