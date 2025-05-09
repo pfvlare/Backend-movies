@@ -21,6 +21,15 @@ export class CardService {
         });
     }
 
+    async edit(userId: string, data: CardDto): Promise<Card> {
+        return this.prisma.card.update({
+            where: {
+                userId
+            },
+            data
+        })
+    }
+
     async findAll(): Promise<Card[]> {
         return this.prisma.card.findMany({
             include: {

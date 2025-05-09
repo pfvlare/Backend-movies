@@ -22,6 +22,14 @@ export class CardController {
         return this.cardService.create(createCardDto)
     }
 
+    @Post(':userId')
+    @ApiOperation({ summary: 'Editar um cartão pelo id do usuário' })
+    @ApiResponse({ status: 201, description: 'Cartão editado com sucesso' })
+    @ApiBody({ type: CardDto })
+    edit(@Param('userId') userId: string, @Body() editCardDto: CardDto) {
+        return this.cardService.edit(userId, editCardDto)
+    }
+
     @Get()
     @ApiOperation({ summary: 'Lista todos os cartões' })
     @ApiResponse({ status: 200, description: 'Cartões retornados com sucesso' })
