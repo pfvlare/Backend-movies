@@ -17,7 +17,7 @@ model User {
   password     String
   Subscription Subscription?
   Favorites    Favorites?
-  Card         Card?
+  Card         Card[] // ← virou lista, pois é 1:N
 }
 
 model Subscription {
@@ -52,8 +52,8 @@ model Card {
   cardNumber   String
   expiresDate  DateTime
   securityCode String
+  userId       String
   user         User     @relation(fields: [userId], references: [id])
-  userId       String   @unique
 }
 
 enum Plan {

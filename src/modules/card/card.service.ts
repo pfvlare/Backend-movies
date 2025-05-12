@@ -8,26 +8,38 @@ export class CardService {
     constructor(private readonly prisma: PrismaService) { }
 
     async create(data: CardDto): Promise<Card> {
+        const userExists = await this.prisma.user.findUnique({
+            where: { id: data.userId },
+        });
+
+        if (!userExists) {
+            throw new NotFoundException(`Usuário com ID ${data.userId} não encontrado`);
+        }
+
         return this.prisma.card.create({
             data: {
                 nameCard: data.nameCard,
                 cardNumber: data.cardNumber,
                 expiresDate: new Date(data.expiresDate),
                 securityCode: data.securityCode,
-                user: {
-                    connect: { id: data.userId },
-                },
+                userId: data.userId,
             },
         });
     }
 
-    async edit(userId: string, data: CardDto): Promise<Card> {
+    async edit(cardId: string, data: CardDto): Promise<Card> {
+        const card = await this.prisma.card.findUnique({
+            where: { id: cardId },
+        });
+
+        if (!card) {
+            throw new NotFoundException(`Cartão com ID ${cardId} não encontrado`);
+        }
+
         return this.prisma.card.update({
-            where: {
-                userId
-            },
-            data
-        })
+            where: { id: cardId },
+            data,
+        });
     }
 
     async findAll(): Promise<Card[]> {
@@ -38,20 +50,23 @@ export class CardService {
         });
     }
 
-    async findByUserId(userId: string): Promise<Card | null> {
-        return this.prisma.card.findUnique({
+    async findByUserId(userId: string): Promise<Card[]> {
+        return this.prisma.card.findMany({
             where: { userId },
         });
     }
 
-    async deleteByUserId(userId: string): Promise<Card> {
-        const existing = await this.findByUserId(userId);
-        if (!existing) {
-            throw new NotFoundException(`Card not found for userId: ${userId}`);
+    async deleteByCardId(cardId: string): Promise<Card> {
+        const card = await this.prisma.card.findUnique({
+            where: { id: cardId },
+        });
+
+        if (!card) {
+            throw new NotFoundException(`Cartão com ID ${cardId} não encontrado`);
         }
 
         return this.prisma.card.delete({
-            where: { userId },
+            where: { id: cardId },
         });
     }
 }
