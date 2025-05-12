@@ -53,6 +53,16 @@ export class CreateUserDto {
     @MinLength(6, { message: 'A senha deve ter pelo menos 6 caracteres' })
     password: string
 
+    @ApiProperty({
+        example: {
+            plan: 'Plano Básico',
+            value: 100.00,
+            registeredAt: '2025-05-12T10:30:00.000Z',
+            expiresAt: '2024-05-12T10:30:00.000Z',
+            userId: '83765e56-c814-4e52-855e-b2fa24c71fcc'
+        },
+        description: 'Assinatura completa',
+    })
     @IsObject()
     Subscription: SubscriptionDto
 }
