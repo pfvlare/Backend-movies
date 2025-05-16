@@ -55,14 +55,16 @@ export class CreateUserDto {
 
     @ApiProperty({
         example: {
-            plan: 'Plano Básico',
+            plan: 'basic', // ✅ válido agora
             value: 100.00,
             registeredAt: '2025-05-12T10:30:00.000Z',
-            expiresAt: '2024-05-12T10:30:00.000Z',
+            expiresAt: '2026-05-12T10:30:00.000Z',
             userId: '83765e56-c814-4e52-855e-b2fa24c71fcc'
         },
         description: 'Assinatura completa',
     })
-    @IsObject()
-    Subscription: SubscriptionDto
+    @ValidateNested()
+    @Type(() => SubscriptionDto)
+    Subscription: SubscriptionDto;
+
 }
