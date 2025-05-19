@@ -1,9 +1,9 @@
-import { IsUUID, IsEnum, IsNumber, IsDateString } from 'class-validator';
+import { IsEnum, IsNumber, IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Plan } from '@prisma/client';
 
 export class SubscriptionDto {
-    @ApiProperty({ enum: Plan, example: Plan.complete })
+    @ApiProperty({ enum: Plan, example: Plan.basic })
     @IsEnum(Plan)
     plan: Plan;
 
@@ -11,15 +11,11 @@ export class SubscriptionDto {
     @IsNumber()
     value: number;
 
-    @ApiProperty({ example: '2024-01-01T00:00:00Z' })
+    @ApiProperty({ example: '2025-05-12T10:30:00.000Z' })
     @IsDateString()
     registeredAt: string;
 
-    @ApiProperty({ example: '2025-01-01T00:00:00Z' })
+    @ApiProperty({ example: '2026-05-12T10:30:00.000Z' })
     @IsDateString()
     expiresAt: string;
-
-    @ApiProperty({ example: 'uuid-aqui' })
-    @IsUUID()
-    userId: string;
 }

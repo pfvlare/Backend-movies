@@ -65,6 +65,6 @@ export class CreateUserDto {
     })
     @ValidateNested()
     @Type(() => SubscriptionDto)
-    Subscription: SubscriptionDto;
+    subscription: SubscriptionDto;
 
 }

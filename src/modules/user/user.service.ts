@@ -18,10 +18,10 @@ export class UserService {
             const hashPassword = await bcrypt.hash(data.password, 10);
 
             const subscriptionData = {
-                plan: data.Subscription.plan,
-                value: data.Subscription.value,
-                registeredAt: data.Subscription.registeredAt,
-                expiresAt: data.Subscription.expiresAt
+                plan: data.subscription.plan,
+                value: data.subscription.value,
+                registeredAt: data.subscription.registeredAt,
+                expiresAt: data.subscription.expiresAt
             };
 
 
@@ -45,10 +45,15 @@ export class UserService {
                 }
             });
 
-            await this.subscription.create({
-                ...subscriptionData,
-                userId: user.id
-            });
+            await this.subscription.create(
+                user.id,
+                {
+                    plan: data.subscription.plan,
+                    value: data.subscription.value,
+                    registeredAt: data.subscription.registeredAt,
+                    expiresAt: data.subscription.expiresAt,
+                }
+            );
 
             return user;
         } catch (error) {

@@ -7,9 +7,18 @@ import { SubscriptionDto } from './dtos/subscription.dto';
 export class SubscriptionService {
     constructor(private readonly prisma: PrismaService) { }
 
-    async create(data: SubscriptionDto): Promise<Subscription> {
-        return this.prisma.subscription.create({ data });
+    async create(userId: string, dto: SubscriptionDto) {
+        return this.prisma.subscription.create({
+            data: {
+            plan: dto.plan,
+            value: dto.value,
+            registeredAt: dto.registeredAt,
+            expiresAt: dto.expiresAt,
+            user: { connect: { id: userId } }, // ← agora userId é string
+            },
+        });
     }
+
 
     async findAll(): Promise<Subscription[]> {
         return this.prisma.subscription.findMany({

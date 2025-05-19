@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, Put, Delete } from '@nestjs/common'
+import { Controller, Post, Get, Body, Param, Put, Delete, ParseIntPipe } from '@nestjs/common'
 import { SubscriptionService } from './subscription.service'
 import { SubscriptionDto } from './dtos/subscription.dto'
 import { Prisma } from '@prisma/client'
@@ -15,12 +15,12 @@ import {
 export class SubscriptionController {
     constructor(private readonly subscriptionService: SubscriptionService) { }
 
-    @Post()
-    @ApiOperation({ summary: 'Cria uma nova assinatura' })
-    @ApiResponse({ status: 201, description: 'Assinatura criada com sucesso' })
-    @ApiBody({ type: SubscriptionDto })
-    create(@Body() dto: SubscriptionDto) {
-        return this.subscriptionService.create(dto)
+    @Post('user/:userId')
+        async create(
+            @Param('userId') userId: string, // ← troquei aqui
+            @Body() dto: SubscriptionDto,
+            ) {
+        return this.subscriptionService.create(userId, dto);
     }
 
     @Get()
