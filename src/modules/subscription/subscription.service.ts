@@ -10,11 +10,11 @@ export class SubscriptionService {
     async create(userId: string, dto: SubscriptionDto) {
         return this.prisma.subscription.create({
             data: {
-            plan: dto.plan,
-            value: dto.value,
-            registeredAt: dto.registeredAt,
-            expiresAt: dto.expiresAt,
-            user: { connect: { id: userId } }, // ← agora userId é string
+                plan: dto.plan,
+                value: dto.value,
+                registeredAt: dto.registeredAt,
+                expiresAt: dto.expiresAt,
+                user: { connect: { id: userId } },
             },
         });
     }

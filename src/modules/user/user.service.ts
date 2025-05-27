@@ -16,19 +16,12 @@ export class UserService {
     async createUser(data: CreateUserDto): Promise<UserResponseDto> {
         try {
             const hashPassword = await bcrypt.hash(data.password, 10);
-
-            const subscriptionData = {
-                plan: data.subscription.plan,
-                value: data.subscription.value,
-                registeredAt: data.subscription.registeredAt,
-                expiresAt: data.subscription.expiresAt
-            };
-
-
+            const expiresAt = new Date();
+            expiresAt.setMonth(expiresAt.getMonth() + 12)
 
             const user = await this.prisma.user.create({
                 data: {
-                    email: data.email,
+                    email: data.email.toLowerCase(),
                     firstname: data.firstname,
                     lastname: data.lastname,
                     phone: data.phone,
@@ -50,8 +43,8 @@ export class UserService {
                 {
                     plan: data.subscription.plan,
                     value: data.subscription.value,
-                    registeredAt: data.subscription.registeredAt,
-                    expiresAt: data.subscription.expiresAt,
+                    expiresAt: expiresAt.toISOString(),
+                    registeredAt: new Date().toISOString()
                 }
             );
 
@@ -84,8 +77,9 @@ export class UserService {
                     lastname: true,
                     phone: true,
                     address: true,
-                    password: true
-                }
+                    password: true,
+                    Subscription: true
+                },
             });
 
             if (!user) {

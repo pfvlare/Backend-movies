@@ -16,10 +16,10 @@ export class SubscriptionController {
     constructor(private readonly subscriptionService: SubscriptionService) { }
 
     @Post('user/:userId')
-        async create(
-            @Param('userId') userId: string, // ← troquei aqui
-            @Body() dto: SubscriptionDto,
-            ) {
+    async create(
+        @Param('userId') userId: string,
+        @Body() dto: SubscriptionDto,
+    ) {
         return this.subscriptionService.create(userId, dto);
     }
 

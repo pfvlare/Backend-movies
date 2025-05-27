@@ -1,5 +1,5 @@
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  id           String        @id @default(uuid()) @map("_id")
+  id           String        @id @default(uuid())
   email        String        @unique
   firstname    String
   lastname     String
@@ -17,21 +17,33 @@ model User {
   password     String
   Subscription Subscription?
   Favorites    Favorites?
-  Card         Card[] // ← virou lista, pois é 1:N
+  Card         Card[]
+  Profile      Profile[]
+}
+
+model Profile {
+  id     String @id @default(uuid())
+  name   String
+  color  String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@unique([userId, name])
+  @@index([userId])
 }
 
 model Subscription {
-  id           String   @id @default(uuid()) @map("_id")
+  id           String   @id @default(uuid())
   plan         Plan
   value        Float
-  registeredAt DateTime
+  registeredAt DateTime @default(now())
   expiresAt    DateTime
   user         User     @relation(fields: [userId], references: [id])
   userId       String   @unique
 }
 
 model Movie {
-  id         String     @id @default(uuid()) @map("_id")
+  id         String     @id @default(uuid())
   title      String
   apiId      String     @unique
   imageUrl   String
@@ -40,14 +52,14 @@ model Movie {
 }
 
 model Favorites {
-  id     String  @id @default(uuid()) @map("_id")
+  id     String  @id @default(uuid())
   user   User    @relation(fields: [userId], references: [id])
   userId String  @unique
   Movie  Movie[]
 }
 
 model Card {
-  id           String   @id @default(uuid()) @map("_id")
+  id           String   @id @default(uuid())
   nameCard     String
   cardNumber   String
   expiresDate  DateTime

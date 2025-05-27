@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from './user.service';
 import { LoginDto } from '../auth/dto/login.dto';
@@ -29,5 +29,12 @@ export class UserController {
     @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
     async signIn(@Body() signInData: LoginDto) {
         return this.authService.signIn(signInData);
+    }
+
+    @Get('find/:id')
+    @ApiOperation({ summary: 'Obtém informações do usuário logado' })
+    @ApiResponse({ status: 200, description: 'Informações do usuário', type: UserResponseDto })
+    async getUser(@Param('id') id: string): Promise<UserResponseDto> {
+        return this.userService.findUser({ id });
     }
 }
