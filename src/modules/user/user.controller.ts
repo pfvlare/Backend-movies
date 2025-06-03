@@ -11,13 +11,11 @@ import { UserResponseDto } from './dtos/userResponse.dto';
 export class UserController {
     constructor(
         private readonly userService: UserService,
-        private readonly authService: AuthService
+        private readonly authService: AuthService // <-- Injetado corretamente via forwardRef
     ) { }
 
     @Post('register')
     @ApiOperation({ summary: 'Registra um novo usuário' })
-    @ApiResponse({ status: 201, description: 'Usuário criado com sucesso', type: UserResponseDto })
-    @ApiResponse({ status: 400, description: 'Dados inválidos' })
     async signUp(@Body() userData: CreateUserDto): Promise<UserResponseDto> {
         return this.userService.createUser(userData);
     }
@@ -25,16 +23,13 @@ export class UserController {
     @Post('login')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Realiza login de usuário' })
-    @ApiResponse({ status: 200, description: 'Login realizado com sucesso' })
-    @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
     async signIn(@Body() signInData: LoginDto) {
-        return this.authService.signIn(signInData);
+        return this.authService.signIn(signInData); // <-- Certifique-se que esse método existe e retorna token
     }
 
     @Get('find/:id')
-    @ApiOperation({ summary: 'Obtém informações do usuário logado' })
-    @ApiResponse({ status: 200, description: 'Informações do usuário', type: UserResponseDto })
-    async getUser(@Param('id') id: string): Promise<UserResponseDto> {
-        return this.userService.findUser({ id });
+    @ApiOperation({ summary: 'Obtém informações do usuário' })
+    async getUser(@Param('id') id: string) {
+        return this.authService.getUser(id);
     }
 }

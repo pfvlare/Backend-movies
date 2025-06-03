@@ -44,28 +44,18 @@ export class CardService {
 
     async findAll(): Promise<Card[]> {
         return this.prisma.card.findMany({
-            include: {
-                user: true,
-            },
+            include: { user: true },
         });
     }
 
-    async findByUserId(userId: string): Promise<Card[]> {
+    async findByUser(userId: string): Promise<Card[]> {
         return this.prisma.card.findMany({
             where: { userId },
         });
     }
 
-    async deleteByCardId(cardId: string): Promise<Card> {
-        const card = await this.prisma.card.findUnique({
-            where: { id: cardId },
-        });
-
-        if (!card) {
-            throw new NotFoundException(`Cartão com ID ${cardId} não encontrado`);
-        }
-
-        return this.prisma.card.delete({
+    async delete(cardId: string): Promise<void> {
+        await this.prisma.card.delete({
             where: { id: cardId },
         });
     }

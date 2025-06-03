@@ -1,24 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/database/prisma.service';
-import { Subscription, Prisma } from '@prisma/client';
-import { SubscriptionDto } from './dtos/subscription.dto';
+import { Subscription, Plan } from '@prisma/client';
 
 @Injectable()
 export class SubscriptionService {
     constructor(private readonly prisma: PrismaService) { }
 
-    async create(userId: string, dto: SubscriptionDto) {
+    async create(userId: string, plan: Plan): Promise<Subscription> {
         return this.prisma.subscription.create({
             data: {
-                plan: dto.plan,
-                value: dto.value,
-                registeredAt: dto.registeredAt,
-                expiresAt: dto.expiresAt,
+                plan,
+                value: this.getPlanPrice(plan),
+                registeredAt: new Date(),
+                expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
                 user: { connect: { id: userId } },
             },
         });
     }
-
 
     async findAll(): Promise<Subscription[]> {
         return this.prisma.subscription.findMany({
@@ -35,7 +33,7 @@ export class SubscriptionService {
         });
     }
 
-    async update(userId: string, data: Prisma.SubscriptionUpdateInput): Promise<Subscription> {
+    async update(userId: string, data: Partial<Subscription>): Promise<Subscription> {
         return this.prisma.subscription.update({
             where: { userId },
             data,
@@ -46,5 +44,18 @@ export class SubscriptionService {
         return this.prisma.subscription.delete({
             where: { userId },
         });
+    }
+
+    private getPlanPrice(plan: Plan): number {
+        switch (plan) {
+            case Plan.basic:
+                return 19.9;
+            case Plan.intermediary:
+                return 29.9;
+            case Plan.complete:
+                return 39.9;
+            default:
+                return 0;
+        }
     }
 }
