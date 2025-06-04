@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator';
-import { Plan } from '@prisma/client';
+import { Plan, Subscription } from '@prisma/client';
 
 export class CreateUserDto {
     @IsEmail()
@@ -22,4 +22,7 @@ export class CreateUserDto {
 
     @IsEnum(Plan)
     plan: Plan;
+
+    @IsNotEmpty()
+    subscription: Subscription
 }

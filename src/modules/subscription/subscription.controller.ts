@@ -15,8 +15,8 @@ export class SubscriptionController {
     constructor(private readonly subscriptionService: SubscriptionService) { }
 
     @Post('user/:userId')
-    create(@Param('userId') userId: string, @Body('plan') plan: Plan): Promise<Subscription> {
-        return this.subscriptionService.create(userId, plan);
+    create(@Param('userId') userId: string, @Body('plan') subscription: Subscription): Promise<Subscription> {
+        return this.subscriptionService.create(userId, subscription);
     }
 
     @Get()

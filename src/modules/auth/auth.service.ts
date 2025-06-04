@@ -14,7 +14,7 @@ export class AuthService {
         private readonly prisma: PrismaService,
     ) { }
 
-    async signIn(data: LoginDto): Promise<Omit<User, 'password'> & { isSubscribed: boolean }> {
+    async signIn(data: LoginDto): Promise<{ token: string, user: Omit<User, 'password'> & { isSubscribed: boolean } }> {
         try {
             const user = await this.userService.findUser({ email: data.email });
 
