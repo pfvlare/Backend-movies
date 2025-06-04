@@ -1,30 +1,132 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Put,
+    ValidationPipe,
+    UsePipes,
+    HttpStatus,
+    HttpException
+} from '@nestjs/common';
 import { ProfileService } from './profile.service';
+import { CreateProfileDto } from './dtos/create-profile.dto';
+import { UpdateProfileDto } from './dtos/update-profile.dto';
 
-@Controller('profiles')
+@Controller('profiles') // <- Importante: este decorator define o prefixo da rota
 export class ProfileController {
     constructor(private readonly profileService: ProfileService) { }
 
     @Post()
-    create(@Body() body: { name: string; color: string; userId: string }) {
-        return this.profileService.create(body.name, body.color, body.userId);
+    @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+    async create(@Body() createProfileDto: CreateProfileDto) {
+        try {
+            return await this.profileService.create(
+                createProfileDto.name,
+                createProfileDto.color,
+                createProfileDto.userId
+            );
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new HttpException(
+                'Erro interno do servidor',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
-    @Get('user/:userId')
-    findByUser(@Param('userId') userId: string) {
-        return this.profileService.findByUser(userId);
+    @Get('user/:userId') // <- Esta rota será /profiles/user/:userId
+    async findByUser(@Param('userId') userId: string) {
+        try {
+            console.log('🔍 Buscando perfis para userId:', userId);
+            const profiles = await this.profileService.findByUser(userId);
+            console.log('✅ Perfis encontrados:', profiles);
+            return profiles;
+        } catch (error) {
+            console.error('❌ Erro no controller ao buscar perfis:', error);
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new HttpException(
+                'Erro interno do servidor',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @Get('user/:userId/limits') // <- Esta rota será /profiles/user/:userId/limits
+    async getUserLimits(@Param('userId') userId: string) {
+        try {
+            console.log('🔍 Buscando limites para userId:', userId);
+            const limits = await this.profileService.getUserProfileLimits(userId);
+            console.log('✅ Limites encontrados:', limits);
+            return limits;
+        } catch (error) {
+            console.error('❌ Erro no controller ao buscar limites:', error);
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new HttpException(
+                'Erro interno do servidor',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @Get(':profileId')
+    async findOne(@Param('profileId') profileId: string) {
+        try {
+            return await this.profileService.findOne(profileId);
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new HttpException(
+                'Erro interno do servidor',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     @Put(':profileId')
-    update(
+    @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+    async update(
         @Param('profileId') id: string,
-        @Body() body: { name: string; color: string }
+        @Body() updateProfileDto: UpdateProfileDto
     ) {
-        return this.profileService.update(id, body.name, body.color);
+        try {
+            return await this.profileService.update(
+                id,
+                updateProfileDto.name,
+                updateProfileDto.color
+            );
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new HttpException(
+                'Erro interno do servidor',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     @Delete(':profileId')
-    delete(@Param('profileId') profileId: string) {
-        return this.profileService.delete(profileId);
+    async delete(@Param('profileId') profileId: string) {
+        try {
+            return await this.profileService.delete(profileId);
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new HttpException(
+                'Erro interno do servidor',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

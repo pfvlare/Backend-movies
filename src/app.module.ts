@@ -7,9 +7,10 @@ import { MovieModule } from './modules/movie/movie.module';
 import { FavoritesModule } from './modules/favorites/favorites.module';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { CardModule } from './modules/card/card.module';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
-  imports: [UserModule, AuthModule, MovieModule, FavoritesModule, SubscriptionModule, CardModule],
+  imports: [UserModule, AuthModule, MovieModule, FavoritesModule, SubscriptionModule, CardModule, ProfileModule],
   controllers: [AppController],
   providers: [AppService],
 })
