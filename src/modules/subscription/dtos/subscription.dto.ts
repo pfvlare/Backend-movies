@@ -19,3 +19,13 @@ export class SubscriptionDto {
     @IsDateString()
     expiresAt: string;
 }
+
+export class SubscriptionReqDto {
+    @ApiProperty({ enum: Plan, example: Plan.basic })
+    @IsEnum(Plan)
+    plan: Plan;
+
+    @ApiProperty({ example: 49.9 })
+    @IsNumber()
+    value: number;
+}

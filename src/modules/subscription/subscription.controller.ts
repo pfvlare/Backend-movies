@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, Param, Put, Delete, ParseIntPipe } from '@nestjs/common'
 import { SubscriptionService } from './subscription.service'
-import { SubscriptionDto } from './dtos/subscription.dto'
+import { SubscriptionDto, SubscriptionReqDto } from './dtos/subscription.dto'
 import { Prisma } from '@prisma/client'
 import {
     ApiTags,
@@ -18,7 +18,7 @@ export class SubscriptionController {
     @Post('user/:userId')
     async create(
         @Param('userId') userId: string,
-        @Body() dto: SubscriptionDto,
+        @Body() dto: SubscriptionReqDto,
     ) {
         return this.subscriptionService.create(userId, dto);
     }

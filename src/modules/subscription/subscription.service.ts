@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/database/prisma.service';
 import { Subscription, Prisma } from '@prisma/client';
-import { SubscriptionDto } from './dtos/subscription.dto';
+import { SubscriptionDto, SubscriptionReqDto } from './dtos/subscription.dto';
 
 @Injectable()
 export class SubscriptionService {
     constructor(private readonly prisma: PrismaService) { }
 
-    async create(userId: string, dto: SubscriptionDto) {
+    async create(userId: string, dto: SubscriptionReqDto) {
         return this.prisma.subscription.create({
             data: {
                 plan: dto.plan,
-                value: dto.value,
-                registeredAt: dto.registeredAt,
-                expiresAt: dto.expiresAt,
+                value: Number(dto.value),
+                registeredAt: new Date(),
+                expiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
                 user: { connect: { id: userId } },
             },
         });

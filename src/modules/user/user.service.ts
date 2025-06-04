@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaService } from "../database/prisma.service";
-import { Prisma, User } from "@prisma/client";
+import { Prisma, Subscription, User } from "@prisma/client";
 import * as bcrypt from 'bcrypt';
 import { SubscriptionService } from "../subscription/subscription.service";
 import { CreateUserDto } from "./dtos/createUser.dto";
@@ -43,8 +43,6 @@ export class UserService {
                 {
                     plan: data.subscription.plan,
                     value: data.subscription.value,
-                    expiresAt: expiresAt.toISOString(),
-                    registeredAt: new Date().toISOString()
                 }
             );
 
@@ -66,7 +64,7 @@ export class UserService {
         }
     }
 
-    async findUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
+    async findUser(where: Prisma.UserWhereUniqueInput): Promise<User & { Subscription: Subscription | null }> {
         try {
             const user = await this.prisma.user.findUnique({
                 where,

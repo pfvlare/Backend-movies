@@ -10,7 +10,7 @@ export class AuthService {
         private userService: UserService,
     ) { }
 
-    async signIn(data: LoginDto): Promise<Omit<User, 'password'>> {
+    async signIn(data: LoginDto): Promise<Omit<User, 'password'> & { isSubscribed: boolean }> {
         try {
             const user = await this.userService.findUser({ email: data.email });
 
@@ -26,7 +26,8 @@ export class AuthService {
                 lastname: user.lastname,
                 email: user.email,
                 phone: user.phone,
-                address: user.address
+                address: user.address,
+                isSubscribed: user.Subscription ? true : false,
             }
         } catch (err) {
             throw new HttpException(
