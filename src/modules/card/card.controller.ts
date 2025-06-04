@@ -1,13 +1,13 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
-import { CardService } from './card.service'
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { CardService } from './card.service';
 import {
     ApiTags,
     ApiOperation,
     ApiResponse,
     ApiParam,
-    ApiBody
-} from '@nestjs/swagger'
-import { CardDto } from './dtos/card.dto'
+    ApiBody,
+} from '@nestjs/swagger';
+import { CardDto } from './dtos/card.dto';
 
 @ApiTags('cards')
 @Controller('cards')
@@ -19,7 +19,7 @@ export class CardController {
     @ApiResponse({ status: 201, description: 'Cartão criado com sucesso' })
     @ApiBody({ type: CardDto })
     create(@Body() createCardDto: CardDto) {
-        return this.cardService.create(createCardDto)
+        return this.cardService.create(createCardDto);
     }
 
     @Put(':cardId')
@@ -28,29 +28,29 @@ export class CardController {
     @ApiResponse({ status: 200, description: 'Cartão editado com sucesso' })
     @ApiBody({ type: CardDto })
     edit(@Param('cardId') cardId: string, @Body() editCardDto: CardDto) {
-        return this.cardService.edit(cardId, editCardDto)
+        return this.cardService.edit(cardId, editCardDto);
     }
 
     @Get()
     @ApiOperation({ summary: 'Lista todos os cartões' })
     @ApiResponse({ status: 200, description: 'Cartões retornados com sucesso' })
     findAll() {
-        return this.cardService.findAll()
+        return this.cardService.findAll();
     }
 
     @Get('user/:userId')
     @ApiOperation({ summary: 'Busca todos os cartões de um usuário' })
     @ApiParam({ name: 'userId', description: 'UUID do usuário' })
-    @ApiResponse({ status: 200, description: 'Cartões retornados com sucesso' })
-    findByUserId(@Param('userId') userId: string) {
-        return this.cardService.findByUserId(userId)
+    @ApiResponse({ status: 200, description: 'Cartões do usuário retornados com sucesso' })
+    findByUser(@Param('userId') userId: string) {
+        return this.cardService.findByUser(userId);
     }
 
     @Delete(':cardId')
-    @ApiOperation({ summary: 'Deleta um cartão pelo ID do cartão' })
+    @ApiOperation({ summary: 'Deleta um cartão pelo ID' })
     @ApiParam({ name: 'cardId', description: 'UUID do cartão' })
-    @ApiResponse({ status: 200, description: 'Cartão deletado com sucesso' })
-    deleteByCardId(@Param('cardId') cardId: string) {
-        return this.cardService.deleteByCardId(cardId)
+    @ApiResponse({ status: 200, description: 'Cartão removido com sucesso' })
+    delete(@Param('cardId') cardId: string) {
+        return this.cardService.delete(cardId);
     }
 }

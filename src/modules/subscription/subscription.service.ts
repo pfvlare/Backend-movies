@@ -19,7 +19,6 @@ export class SubscriptionService {
         });
     }
 
-
     async findAll(): Promise<Subscription[]> {
         return this.prisma.subscription.findMany({
             include: {
@@ -35,7 +34,7 @@ export class SubscriptionService {
         });
     }
 
-    async update(userId: string, data: Prisma.SubscriptionUpdateInput): Promise<Subscription> {
+    async update(userId: string, data: Partial<Subscription>): Promise<Subscription> {
         return this.prisma.subscription.update({
             where: { userId },
             data,
@@ -46,5 +45,18 @@ export class SubscriptionService {
         return this.prisma.subscription.delete({
             where: { userId },
         });
+    }
+
+    private getPlanPrice(plan: Plan): number {
+        switch (plan) {
+            case Plan.basic:
+                return 19.9;
+            case Plan.intermediary:
+                return 29.9;
+            case Plan.complete:
+                return 39.9;
+            default:
+                return 0;
+        }
     }
 }

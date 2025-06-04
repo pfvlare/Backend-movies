@@ -8,13 +8,14 @@ generator client {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  email        String        @unique
-  firstname    String
-  lastname     String
-  phone        String
-  address      String
-  password     String
+  id        String @id @default(uuid())
+  email     String @unique
+  firstname String
+  lastname  String
+  phone     String
+  address   String
+  password  String
+
   Subscription Subscription?
   Favorites    Favorites?
   Card         Card[]
@@ -42,20 +43,11 @@ model Subscription {
   userId       String   @unique
 }
 
-model Movie {
-  id         String     @id @default(uuid())
-  title      String
-  apiId      String     @unique
-  imageUrl   String
-  favorite   Favorites? @relation(fields: [favoriteId], references: [id])
-  favoriteId String?
-}
-
 model Favorites {
-  id     String  @id @default(uuid())
-  user   User    @relation(fields: [userId], references: [id])
-  userId String  @unique
-  Movie  Movie[]
+  id       String   @id @default(uuid())
+  user     User     @relation(fields: [userId], references: [id])
+  userId   String   @unique
+  movieIds String[] @default([])
 }
 
 model Card {
@@ -72,4 +64,14 @@ enum Plan {
   basic
   intermediary
   complete
+}
+
+model Movie {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  releaseDate DateTime
+  posterUrl   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

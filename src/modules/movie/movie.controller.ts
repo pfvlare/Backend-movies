@@ -1,41 +1,33 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common'
-import { MovieService } from './movie.service'
-import { MovieDto } from './dtos/movie.dto'
-import {
-    ApiTags,
-    ApiOperation,
-    ApiResponse,
-    ApiParam,
-    ApiQuery,
-    ApiBody
-} from '@nestjs/swagger'
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { MovieService } from './movie.service';
+import { Prisma } from '@prisma/client';
 
-@ApiTags('movies')
 @Controller('movies')
 export class MovieController {
     constructor(private readonly movieService: MovieService) { }
 
+    @Post()
+    create(@Body() data: Prisma.MovieCreateInput) {
+        return this.movieService.create(data);
+    }
+
     @Get()
-    @ApiOperation({ summary: 'Lista todos os filmes ou filtra por nome' })
-    @ApiQuery({ name: 'input', required: false, description: 'Texto para busca por nome do filme' })
-    @ApiResponse({ status: 200, description: 'Lista de filmes retornada com sucesso' })
-    findAll(@Query('input') input: string) {
-        return this.movieService.findWhere(input)
+    findAll() {
+        return this.movieService.findAll();
     }
 
     @Get(':id')
-    @ApiOperation({ summary: 'Busca um filme pelo ID' })
-    @ApiParam({ name: 'id', description: 'UUID do filme' })
-    @ApiResponse({ status: 200, description: 'Filme retornado com sucesso' })
     findOne(@Param('id') id: string) {
-        return this.movieService.findOne(id)
+        return this.movieService.findOne(id);
     }
 
-    @Post()
-    @ApiOperation({ summary: 'Cria um novo filme' })
-    @ApiResponse({ status: 201, description: 'Filme criado com sucesso' })
-    @ApiBody({ type: MovieDto })
-    create(@Body() createMovieDto: MovieDto) {
-        return this.movieService.create(createMovieDto)
+    @Put(':id')
+    update(@Param('id') id: string, @Body() data: Prisma.MovieUpdateInput) {
+        return this.movieService.update(id, data);
+    }
+
+    @Delete(':id')
+    delete(@Param('id') id: string) {
+        return this.movieService.delete(id);
     }
 }

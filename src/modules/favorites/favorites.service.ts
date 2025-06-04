@@ -1,78 +1,60 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/modules/database/prisma.service';
-import { Favorites, Prisma } from '@prisma/client';
 
 @Injectable()
 export class FavoritesService {
     constructor(private readonly prisma: PrismaService) { }
 
-    async create(userId: string): Promise<Favorites> {
+    async create(userId: string) {
         return this.prisma.favorites.create({
             data: {
                 userId,
+                movieIds: [],
             },
         });
     }
 
-    async findAll(): Promise<Favorites[]> {
-        return this.prisma.favorites.findMany({
-            include: {
-                Movie: true,
-                user: true,
-            },
-        });
+    async findAll() {
+        return this.prisma.favorites.findMany();
     }
 
-    async findByUserId(userId: string): Promise<Favorites | null> {
-        return this.prisma.favorites.findUnique({
+    async findByUserId(userId: string) {
+        const favorites = await this.prisma.favorites.findUnique({
             where: { userId },
-            include: {
-                Movie: true,
-            },
         });
+        if (!favorites) {
+            throw new NotFoundException('Favoritos não encontrados');
+        }
+        return favorites;
     }
 
-    async addMovieToFavorites(userId: string, movieId: string): Promise<Favorites> {
+    async addMovieToFavorites(userId: string, movieId: string) {
         const favorites = await this.prisma.favorites.upsert({
             where: { userId },
-            create: {
-                userId,
-            },
+            create: { userId, movieIds: [movieId] },
             update: {},
         });
 
-        const movie = await this.prisma.movie.findUnique({
-            where: { id: movieId },
-        });
+        if (favorites.movieIds.includes(movieId)) return favorites;
 
-        if (!movie) {
-            throw new Error(`Movie not found with id: ${movieId}`);
-        }
-
-        await this.prisma.movie.update({
-            where: { id: movieId },
-            data: {
-                favoriteId: favorites.id,
-            },
-        });
-
-        const updatedFavorites = await this.findByUserId(userId);
-        if (!updatedFavorites) {
-            throw new Error(`Favorites not found for userId: ${userId}`);
-        }
-        return updatedFavorites;
-    }
-
-    async removeMovieFromFavorites(userId: string, movieId: string): Promise<Favorites> {
         return this.prisma.favorites.update({
             where: { userId },
             data: {
-                Movie: {
-                    disconnect: { id: movieId },
+                movieIds: {
+                    push: movieId,
                 },
             },
-            include: {
-                Movie: true,
+        });
+    }
+
+    async removeMovieFromFavorites(userId: string, movieId: string) {
+        const favorites = await this.findByUserId(userId);
+        const filtered = favorites.movieIds.filter((id) => id !== movieId);
+
+        return this.prisma.favorites.update({
+            where: { userId },
+            data: {
+                movieIds: filtered,
             },
         });
     }

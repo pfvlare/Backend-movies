@@ -1,31 +1,30 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { CreateProfileDto } from './dtos/create-profile.dto';
-import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { ProfileService } from './profile.service';
 
-@ApiTags('profiles')
 @Controller('profiles')
 export class ProfileController {
-    constructor(private readonly service: ProfileService) { }
+    constructor(private readonly profileService: ProfileService) { }
 
     @Post()
-    create(@Body() dto: CreateProfileDto) {
-        return this.service.create(dto);
-    }
-
-    @Put(':id')
-    update(@Param('id') id: string, @Body() dto: UpdateProfileDto) {
-        return this.service.update(id, dto);
-    }
-
-    @Delete(':id')
-    delete(@Param('id') id: string) {
-        return this.service.delete(id);
+    create(@Body() body: { name: string; color: string; userId: string }) {
+        return this.profileService.create(body.name, body.color, body.userId);
     }
 
     @Get('user/:userId')
     findByUser(@Param('userId') userId: string) {
-        return this.service.findByUser(userId);
+        return this.profileService.findByUser(userId);
+    }
+
+    @Put(':profileId')
+    update(
+        @Param('profileId') id: string,
+        @Body() body: { name: string; color: string }
+    ) {
+        return this.profileService.update(id, body.name, body.color);
+    }
+
+    @Delete(':profileId')
+    delete(@Param('profileId') profileId: string) {
+        return this.profileService.delete(profileId);
     }
 }

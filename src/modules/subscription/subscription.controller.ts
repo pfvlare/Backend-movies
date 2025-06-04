@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Body, Param, Put, Delete, ParseIntPipe } from '@nestjs/common'
 import { SubscriptionService } from './subscription.service'
 import { SubscriptionDto, SubscriptionReqDto } from './dtos/subscription.dto'
-import { Prisma } from '@prisma/client'
+import { Plan, Prisma, Subscription } from '@prisma/client'
 import {
     ApiTags,
     ApiOperation,
@@ -10,48 +10,35 @@ import {
     ApiBody
 } from '@nestjs/swagger'
 
-@ApiTags('subscriptions')
 @Controller('subscriptions')
 export class SubscriptionController {
     constructor(private readonly subscriptionService: SubscriptionService) { }
 
     @Post('user/:userId')
-    async create(
-        @Param('userId') userId: string,
-        @Body() dto: SubscriptionReqDto,
-    ) {
-        return this.subscriptionService.create(userId, dto);
+    create(@Param('userId') userId: string, @Body('plan') plan: Plan): Promise<Subscription> {
+        return this.subscriptionService.create(userId, plan);
     }
 
     @Get()
-    @ApiOperation({ summary: 'Lista todas as assinaturas' })
-    @ApiResponse({ status: 200, description: 'Lista de assinaturas retornada com sucesso' })
-    findAll() {
-        return this.subscriptionService.findAll()
+    findAll(): Promise<Subscription[]> {
+        return this.subscriptionService.findAll();
     }
 
     @Get('user/:userId')
-    @ApiOperation({ summary: 'Busca uma assinatura pelo ID do usuário' })
-    @ApiParam({ name: 'userId', description: 'UUID do usuário' })
-    @ApiResponse({ status: 200, description: 'Assinatura do usuário retornada com sucesso' })
-    findByUserId(@Param('userId') userId: string) {
-        return this.subscriptionService.findByUserId(userId)
+    findByUserId(@Param('userId') userId: string): Promise<Subscription | null> {
+        return this.subscriptionService.findByUserId(userId);
     }
 
     @Put('user/:userId')
-    @ApiOperation({ summary: 'Atualiza uma assinatura do usuário' })
-    @ApiParam({ name: 'userId', description: 'UUID do usuário' })
-    @ApiBody({ type: SubscriptionDto })
-    @ApiResponse({ status: 200, description: 'Assinatura atualizada com sucesso' })
-    update(@Param('userId') userId: string, @Body() data: Prisma.SubscriptionUpdateInput) {
-        return this.subscriptionService.update(userId, data)
+    update(
+        @Param('userId') userId: string,
+        @Body() data: Partial<Subscription>
+    ): Promise<Subscription> {
+        return this.subscriptionService.update(userId, data);
     }
 
     @Delete('user/:userId')
-    @ApiOperation({ summary: 'Remove a assinatura do usuário' })
-    @ApiParam({ name: 'userId', description: 'UUID do usuário' })
-    @ApiResponse({ status: 200, description: 'Assinatura removida com sucesso' })
-    remove(@Param('userId') userId: string) {
-        return this.subscriptionService.remove(userId)
+    remove(@Param('userId') userId: string): Promise<Subscription> {
+        return this.subscriptionService.remove(userId);
     }
 }
