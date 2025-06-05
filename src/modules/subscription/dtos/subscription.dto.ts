@@ -17,7 +17,7 @@ export class SubscriptionDto {
         example: Plan.basic,
         description: 'Tipo do plano de assinatura'
     })
-    @IsEnum(Plan, { message: 'Plano deve ser: BASIC, INTERMEDIARY ou COMPLETE' })
+    @IsEnum(Plan, { message: 'Plano deve ser: basic, intermediary ou complete' })
     plan: Plan;
 
     @ApiProperty({
@@ -58,11 +58,48 @@ export class SubscriptionReqDto {
         description: 'Tipo do plano de assinatura',
         enumName: 'Plan'
     })
-    @IsEnum(Plan, { message: 'Plano deve ser: BASIC, INTERMEDIARY ou COMPLETE' })
+    @IsEnum(Plan, { message: 'Plano deve ser: basic, intermediary ou complete' })
     @IsNotEmpty({ message: 'Plano é obrigatório' })
     @Transform(({ value }) => {
+        console.log('🔄 Transforming plan value:', { value, type: typeof value });
+
         if (typeof value === 'string') {
-            return value.toUpperCase() as Plan;
+            // Converter para minúsculo para bater com o enum do Prisma
+            const lowerValue = value.toLowerCase().trim();
+
+            // Mapear possíveis variações
+            const planMapping: { [key: string]: string } = {
+                'basic': 'basic',
+                'basico': 'basic',
+                'intermediary': 'intermediary',
+                'intermediario': 'intermediary',
+                'padrão': 'intermediary',
+                'padrao': 'intermediary',
+                'complete': 'complete',
+                'completo': 'complete',
+                'premium': 'complete'
+            };
+
+            const mappedValue = planMapping[lowerValue] || lowerValue;
+
+            // Log para debug
+            console.log('🔄 Plan transformation:', {
+                original: value,
+                lower: lowerValue,
+                mapped: mappedValue,
+                validPlans: Object.values(Plan)
+            });
+
+            // Verificar se é um valor válido do enum
+            if (!Object.values(Plan).includes(mappedValue as Plan)) {
+                console.error('❌ Invalid plan value:', {
+                    received: mappedValue,
+                    validValues: Object.values(Plan)
+                });
+                throw new Error(`Plano inválido: ${value}. Valores aceitos: ${Object.values(Plan).join(', ')}`);
+            }
+
+            return mappedValue as Plan;
         }
         return value;
     })
@@ -77,6 +114,8 @@ export class SubscriptionReqDto {
     @IsNumber({}, { message: 'Valor deve ser um número' })
     @Min(0.01, { message: 'Valor deve ser maior que 0' })
     @Transform(({ value }) => {
+        console.log('🔄 Transforming value:', { value, type: typeof value });
+
         const num = Number(value);
         if (isNaN(num)) {
             throw new Error(`Valor inválido: ${value}`);
@@ -94,10 +133,30 @@ export class UpdateSubscriptionDto {
         required: false
     })
     @IsOptional()
-    @IsEnum(Plan, { message: 'Plano deve ser: BASIC, INTERMEDIARY ou COMPLETE' })
+    @IsEnum(Plan, { message: 'Plano deve ser: basic, intermediary ou complete' })
     @Transform(({ value }) => {
         if (value && typeof value === 'string') {
-            return value.toUpperCase() as Plan;
+            const lowerValue = value.toLowerCase().trim();
+
+            const planMapping: { [key: string]: string } = {
+                'basic': 'basic',
+                'basico': 'basic',
+                'intermediary': 'intermediary',
+                'intermediario': 'intermediary',
+                'padrão': 'intermediary',
+                'padrao': 'intermediary',
+                'complete': 'complete',
+                'completo': 'complete',
+                'premium': 'complete'
+            };
+
+            const mappedValue = planMapping[lowerValue] || lowerValue;
+
+            if (!Object.values(Plan).includes(mappedValue as Plan)) {
+                throw new Error(`Plano inválido: ${value}. Valores aceitos: ${Object.values(Plan).join(', ')}`);
+            }
+
+            return mappedValue as Plan;
         }
         return value;
     })

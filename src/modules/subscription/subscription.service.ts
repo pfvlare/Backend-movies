@@ -158,6 +158,8 @@ export class SubscriptionService {
             const updateData: any = {};
 
             if (data.plan) {
+                // Validar o plano antes de atualizar
+                this.validatePlan(data.plan);
                 updateData.plan = data.plan;
             }
 
@@ -291,13 +293,13 @@ export class SubscriptionService {
     }
 
     private validateSubscriptionData(dto: SubscriptionReqDto): void {
+        console.log('🔍 Validating subscription data:', dto);
+
         if (!dto.plan) {
             throw new BadRequestException('Plano é obrigatório');
         }
 
-        if (!Object.values(Plan).includes(dto.plan)) {
-            throw new BadRequestException(`Plano inválido. Planos válidos: ${Object.values(Plan).join(', ')}`);
-        }
+        this.validatePlan(dto.plan);
 
         if (dto.value === undefined || dto.value === null) {
             throw new BadRequestException('Valor é obrigatório');
@@ -306,6 +308,20 @@ export class SubscriptionService {
         const numValue = Number(dto.value);
         if (isNaN(numValue) || numValue <= 0) {
             throw new BadRequestException('Valor deve ser um número maior que 0');
+        }
+    }
+
+    private validatePlan(plan: Plan): void {
+        const validPlans = Object.values(Plan);
+        console.log('🔍 Plan validation:', {
+            receivedPlan: plan,
+            planType: typeof plan,
+            validPlans: validPlans,
+            isValid: validPlans.includes(plan)
+        });
+
+        if (!validPlans.includes(plan)) {
+            throw new BadRequestException(`Plano inválido: ${plan}. Planos válidos: ${validPlans.join(', ')}`);
         }
     }
 
@@ -341,7 +357,7 @@ export class SubscriptionService {
             newExpiry.setMonth(newExpiry.getMonth() + months);
 
             return this.update(userId, {
-                expiresAt: newExpiry
+                expiresAt: newExpiry.toISOString()
             } as any);
 
         } catch (error) {

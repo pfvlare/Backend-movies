@@ -7,7 +7,7 @@ import {
     ApiParam,
     ApiBody,
 } from '@nestjs/swagger';
-import { CardDto } from './dtos/card.dto';
+import { CreateCardDto, UpdateCardDto } from './dtos/card.dto';
 
 @ApiTags('cards')
 @Controller('cards')
@@ -17,8 +17,17 @@ export class CardController {
     @Post()
     @ApiOperation({ summary: 'Cria um novo cartão para um usuário' })
     @ApiResponse({ status: 201, description: 'Cartão criado com sucesso' })
-    @ApiBody({ type: CardDto })
-    create(@Body() createCardDto: CardDto) {
+    @ApiBody({ type: CreateCardDto })
+    create(@Body() createCardDto: CreateCardDto) {
+        console.log('🔍 Dados recebidos no controller:', createCardDto);
+        console.log('🔍 Tipo de cada campo:', {
+            nameCard: typeof createCardDto.nameCard,
+            cardNumber: typeof createCardDto.cardNumber,
+            securityCode: typeof createCardDto.securityCode,
+            expiresDate: typeof createCardDto.expiresDate,
+            userId: typeof createCardDto.userId,
+        });
+
         return this.cardService.create(createCardDto);
     }
 
@@ -26,8 +35,8 @@ export class CardController {
     @ApiOperation({ summary: 'Editar um cartão pelo ID do cartão' })
     @ApiParam({ name: 'cardId', description: 'UUID do cartão' })
     @ApiResponse({ status: 200, description: 'Cartão editado com sucesso' })
-    @ApiBody({ type: CardDto })
-    edit(@Param('cardId') cardId: string, @Body() editCardDto: CardDto) {
+    @ApiBody({ type: UpdateCardDto })
+    edit(@Param('cardId') cardId: string, @Body() editCardDto: UpdateCardDto) {
         return this.cardService.edit(cardId, editCardDto);
     }
 
