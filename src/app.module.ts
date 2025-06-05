@@ -8,9 +8,15 @@ import { FavoritesModule } from './modules/favorites/favorites.module';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { CardModule } from './modules/card/card.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { ConfigModule } from '@nestjs/config';
+import { TmdbModule } from './modules/tmdb/tmdb.module';
 
 @Module({
-  imports: [UserModule, AuthModule, MovieModule, FavoritesModule, SubscriptionModule, CardModule, ProfileModule],
+  imports: [UserModule, AuthModule, MovieModule, FavoritesModule, SubscriptionModule, CardModule, ProfileModule, ConfigModule.forRoot({
+    isGlobal: true,
+  }),
+
+    TmdbModule,],
   controllers: [AppController],
   providers: [AppService],
 })

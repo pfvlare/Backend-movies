@@ -79,6 +79,7 @@ export class UserService {
                     address: true,
                     password: true,
                     Subscription: true,
+                    Profile: true
                 },
             });
 
