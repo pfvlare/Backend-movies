@@ -20,7 +20,6 @@ export class MovieService {
         return movie;
     }
 
-
     async update(id: string, data: Prisma.MovieUpdateInput): Promise<Movie> {
         return this.prisma.movie.update({ where: { id }, data });
     }

@@ -179,12 +179,27 @@ export class TmdbService {
     }
 
     // Pesquisar filmes
-    async searchMovies(query: string, page: number = 1): Promise<MovieResponse> {
-        if (!query || query.trim().length < 2) {
-            throw new HttpException('Query deve ter pelo menos 2 caracteres', HttpStatus.BAD_REQUEST);
+    async searchMovies(
+        query: string | null,
+        genre: number | null,
+        page: number = 1,
+    ): Promise<MovieResponse> {
+        let endpoint = '/search/movie'; // Default to text search
+        const params: Record<string, any> = { page };
+
+        if (query) {
+            params.query = query.trim();
+        } else if (genre) {
+            endpoint = '/discover/movie'; // Switch to discover for genre
+            params.with_genres = genre;
+        } else {
+            throw new HttpException(
+                'A search query or genre is required',
+                HttpStatus.BAD_REQUEST,
+            );
         }
 
-        return this.makeRequest<MovieResponse>('/search/movie', { query: query.trim(), page });
+        return this.makeRequest<MovieResponse>(endpoint, params);
     }
 
     // Buscar detalhes de uma pessoa (ator, diretor, etc.)

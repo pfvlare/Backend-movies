@@ -72,20 +72,21 @@ export class TmdbController {
     }
 
     @Get('search')
-    @ApiOperation({ summary: 'Pesquisar filmes' })
-    @ApiQuery({ name: 'q', description: 'Termo de busca' })
+    @ApiOperation({ summary: 'Pesquisar filmes por texto ou gênero' })
+    @ApiQuery({ name: 'q', description: 'Termo de busca (opcional)', required: false })
+    @ApiQuery({ name: 'genre', description: 'ID do gênero (opcional)', required: false, type: Number })
     @ApiQuery({ name: 'page', required: false, type: Number })
     @ApiResponse({ status: 200, description: 'Resultados da pesquisa retornados com sucesso' })
     async searchMovies(
-        @Query('q') query: string,
+        @Query('q') query: string | null,
+        @Query('genre') genre: string | null, // Changed to string | null
         @Query('page') page?: string,
     ) {
         try {
-            if (!query) {
-                throw new HttpException('Parâmetro de busca é obrigatório', HttpStatus.BAD_REQUEST);
-            }
             const pageNumber = page ? parseInt(page) : 1;
-            return await this.tmdbService.searchMovies(query, pageNumber);
+            const genreNumber = genre ? parseInt(genre) : null; // Convert genre to number
+
+            return await this.tmdbService.searchMovies(query, genreNumber, pageNumber);
         } catch (error) {
             throw error;
         }
